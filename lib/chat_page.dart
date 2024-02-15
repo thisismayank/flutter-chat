@@ -8,6 +8,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:uuid/uuid.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:dio/dio.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
@@ -113,6 +114,19 @@ class _ChatPageState extends State<ChatPage> {
       );
 
       _addMessage(message);
+      // Encode to Base64
+      String base64Image = base64Encode(bytes);
+      // Send to backend
+      final formData = FormData.fromMap({
+        'name': 'dio',
+        'date': DateTime.now().toIso8601String(),
+        'file':
+            await MultipartFile.fromFile(result.path, filename: result.name),
+      });
+      final response = await Dio()
+          .post('http://localhost:8000/v1/chats/image', data: formData);
+
+      print('WE ARE HERE!!!!!! $response');
     }
   }
 

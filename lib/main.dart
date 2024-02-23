@@ -1,8 +1,5 @@
-import 'package:casper/chat_page.dart';
-import 'package:casper/login_page.dart';
 import 'package:flutter/material.dart';
-
-// import 'chat_page.dart';
+import 'login_page.dart';
 
 void main() {
   runApp(const MyApp());

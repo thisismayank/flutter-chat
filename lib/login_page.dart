@@ -1,8 +1,11 @@
-import 'package:casper/otp_page.dart';
 import 'package:flutter/material.dart';
+import 'otp_page.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class EmailScreen extends StatefulWidget {
+  const EmailScreen({Key? key}) : super(key: key);
+
   @override
   _EmailScreenState createState() => _EmailScreenState();
 }
@@ -16,10 +19,8 @@ class _EmailScreenState extends State<EmailScreen> {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: '{"email": "${_emailController.text}"}',
+      body: jsonEncode({'email': _emailController.text}),
     );
-    print(response.statusCode);
-    print(response.body);
 
     if (response.statusCode == 200) {
       Navigator.of(context).push(MaterialPageRoute(
@@ -27,27 +28,45 @@ class _EmailScreenState extends State<EmailScreen> {
       ));
     } else {
       // Handle error or notify user
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to send email. Please try again.')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Enter Your Email')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            ElevatedButton(
-              onPressed: _sendEmail,
-              child: Text('Send OTP'),
-            ),
-          ],
+      appBar: AppBar(title: const Text('Enter Your Email')),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                child: TextField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    focusColor: Colors.blue.shade600,
+                    fillColor: Colors.blue.shade600,
+                    labelText: 'Email',
+                    iconColor: Colors.white,
+                    prefixIcon: const Icon(Icons.email),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(color: Colors.blue.shade600),
+                    ),
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () => _sendEmail(),
+                child: const Text('Send OTP'),
+              ),
+            ],
+          ),
         ),
       ),
     );

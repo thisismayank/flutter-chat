@@ -1,7 +1,10 @@
+import 'package:casper/data/user_data.dart';
 import 'package:casper/hoome_navigation.dart';
+import 'package:casper/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'old_d1.dart'; // Ensure this file exists
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'dart:convert';
 
 class OTPScreen extends StatelessWidget {
@@ -16,10 +19,30 @@ class OTPScreen extends StatelessWidget {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode({'email': email, 'otp': _otpController.text}),
+      body: jsonEncode({
+        'email': email,
+        'verificationCode': _otpController.text,
+        "deviceToken": "1"
+      }),
     );
 
     if (response.statusCode == 200) {
+      var userDataDecoded = json.decode(response.body);
+
+      var userData = userDataDecoded["results"];
+
+      var user = User(
+        userId: userData["_id"],
+        name: '${userData["firstName"]} ${userData["lastName"]}',
+        firstName: userData["firstName"],
+        lastName: userData["lastName"],
+        email: userData["email"],
+        token: userData["token"],
+        authToken: '${userData["_id"]},${userData["token"]}',
+      );
+
+      Provider.of<UserProvider>(context, listen: false).setUser(user);
+
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => HomeNavigationScreen()),
         (Route<dynamic> route) => false,

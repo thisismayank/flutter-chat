@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:casper/data/user_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:uuid/uuid.dart';
@@ -131,26 +133,78 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: Chat(
-          messages: _messages,
-          onAttachmentPressed: _handleAttachmentPressed,
-          // onMessageTap: _handleMessageTap,
-          // onPreviewDataFetched: _handlePreviewDataFetched,
-          onSendPressed: _handleSendPressed,
-          showUserAvatars: true,
-          showUserNames: true,
-          user: _user,
-          theme: const DefaultChatTheme(
-            seenIcon: Text(
-              'read',
-              style: TextStyle(
-                fontSize: 10.0,
+  Widget build(BuildContext context) {
+    var user = Provider.of<UserProvider>(context).user;
+    return Scaffold(
+      backgroundColor: Colors.blue[800],
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Hi, ${user?.firstName}!",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Text(
+                        "24 Feb, 2024",
+                        style: TextStyle(color: Colors.blue[200]),
+                      )
+                    ],
+                  )
+                ],
               ),
             ),
-          ),
+            SizedBox(
+              height: 20,
+            ),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(50),
+                    topRight: Radius.circular(50),
+                  ),
+                ),
+                padding: const EdgeInsets.only(top: 50),
+                child: Chat(
+                  messages: _messages,
+                  onAttachmentPressed: _handleAttachmentPressed,
+                  onSendPressed: _handleSendPressed,
+                  showUserAvatars: true,
+                  showUserNames: true,
+                  user: _user,
+                  theme: DefaultChatTheme(
+                    inputBackgroundColor: Colors.blue.shade800,
+                    seenIcon: Text(
+                      'read',
+                      style: TextStyle(
+                        fontSize: 10.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-      );
+      ),
+    );
+  }
+
   void _handleSendPressed(types.PartialText message) async {
     final textMessage = types.TextMessage(
       author: _user,

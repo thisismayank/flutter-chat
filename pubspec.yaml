@@ -43,6 +43,7 @@ dependencies:
   file_picker: ^6.1.1
   dio: ^5.4.0
   curved_labeled_navigation_bar: ^2.0.2
+  provider: ^6.1.1
 
 dev_dependencies:
   flutter_test:

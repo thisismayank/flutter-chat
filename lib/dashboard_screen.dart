@@ -1,5 +1,7 @@
+import 'package:casper/data/user_data.dart';
 import 'package:casper/emoticon_face.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'chat_page.dart'; // Ensure this imports your ChatPage correctly
 
 // Define the Chat class
@@ -22,11 +24,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final List<Chat> _chats = [
     Chat(id: '1', name: 'Alice', lastMessage: 'Hey, how are you?'),
     Chat(id: '2', name: 'Bob', lastMessage: 'What\'s up?'),
+    Chat(id: '3', name: 'John', lastMessage: 'Hey, how you doin?'),
+    Chat(id: '4', name: 'Jake', lastMessage: 'How\'s it going?'),
+    Chat(id: '5', name: 'Emma', lastMessage: 'How was your day?'),
     // Add more chats as needed
   ];
 
   @override
   Widget build(BuildContext context) {
+    var user = Provider.of<UserProvider>(context).user;
+    print('USERRRR ${user}');
+    print('USERRRR ${user?.name}');
+
     return Scaffold(
         backgroundColor: Colors.blue[800],
         body: SafeArea(
@@ -41,17 +50,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            "Hi, User!",
+                          Text(
+                            "Hi, ${user?.firstName}!",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(
-                            height: 8,
+                            height: 4,
                           ),
                           Text(
                             "24 Feb, 2024",
@@ -64,7 +73,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  // search bar
+
+                  // Search bar++
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.blue[600],
@@ -73,15 +83,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 0.0),
                       child: TextField(
+                        style: TextStyle(color: Colors.white),
+                        cursorColor: Colors.white,
                         decoration: InputDecoration(
                           focusColor: Colors.blue.shade600,
                           fillColor: Colors.blue.shade600,
                           hintText: 'Search...',
+                          hintStyle: TextStyle(
+                              color: Colors.white.withOpacity(
+                                  0.6)), // Set hint text color to a lighter white
+                          prefixIcon: Icon(Icons.search, color: Colors.white),
                           iconColor: Colors.white,
-                          prefixIcon: const Icon(Icons.search),
+
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(color: Colors.blue.shade600),
+                            borderSide: BorderSide.none,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            // Used when TextFormField is enabled
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide.none, // No border
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            // Used when TextFormField is focused
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide.none, // No border
                           ),
                         ),
                       ),
@@ -107,12 +133,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   const SizedBox(
                     height: 25,
                   ),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Column(
                         children: [
-                          EmoticonFace(emoticonFace: "😄"),
+                          EmoticonFace(
+                            emoticonFace: "😄",
+                            onTap: () {
+                              print('Emoticon Tapped!');
+                            },
+                          ),
                           SizedBox(
                             height: 8,
                           ),
@@ -124,7 +155,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                       Column(
                         children: [
-                          EmoticonFace(emoticonFace: "😄"),
+                          EmoticonFace(
+                            emoticonFace: "😄",
+                            onTap: () {
+                              print('Emoticon Tapped!');
+                            },
+                          ),
                           SizedBox(
                             height: 8,
                           ),
@@ -136,7 +172,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                       Column(
                         children: [
-                          EmoticonFace(emoticonFace: "😄"),
+                          EmoticonFace(
+                            emoticonFace: "😄",
+                            onTap: () {
+                              print('Emoticon Tapped!');
+                            },
+                          ),
                           SizedBox(
                             height: 8,
                           ),
@@ -148,7 +189,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                       Column(
                         children: [
-                          EmoticonFace(emoticonFace: "😄"),
+                          EmoticonFace(
+                            emoticonFace: "😄",
+                            onTap: () {
+                              print('Emoticon Tapped!');
+                            },
+                          ),
                           SizedBox(
                             height: 8,
                           ),
@@ -166,41 +212,86 @@ class _DashboardScreenState extends State<DashboardScreen> {
             SizedBox(
               height: 20,
             ),
+
+            // CHATS HEADING+++
+
+            // CHATS +++
             Expanded(
-                child: Container(
-              decoration: BoxDecoration(
+              child: Container(
+                decoration: BoxDecoration(
                   color: Colors.grey[100],
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50),
-                      topRight: Radius.circular(50))),
-              padding: const EdgeInsets.all(25),
-              child: Center(
-                child: Column(children: [
-                  const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Previous Chats",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20),
+                    topLeft: Radius.circular(50),
+                    topRight: Radius.circular(50),
+                  ),
+                ),
+                padding: const EdgeInsets.all(25),
+                child: ListView.builder(
+                  itemCount:
+                      _chats.length + 1, // +1 to accommodate the header row
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      // Return the header for the first item
+                      return Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Previous Chats",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
+                              ),
+                              Icon(Icons.more_horiz),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                        ],
+                      );
+                    }
+                    // Adjust index by 1 because the first item is the header
+                    final chat = _chats[index - 1];
+                    return Container(
+                      margin: EdgeInsets.only(
+                          bottom: 8), // Add some space between items
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: ListTile(
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: EdgeInsets.all(16),
+                            color: Colors.orange,
+                            child: Icon(Icons.favorite, color: Colors.white),
+                          ),
                         ),
-                        Icon(Icons.more_horiz),
-                      ]),
-                  Column(
-                    children: _chats
-                        .map((chat) => ListTile(
-                              title: Text(chat.name),
-                              subtitle: Text(chat.lastMessage),
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => ChatPage()));
-                              },
-                            ))
-                        .toList(),
-                  )
-                ]),
+                        title: Text(
+                          chat.name,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          chat.lastMessage,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        trailing: Icon(Icons.more_horiz),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => ChatPage()),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
               ),
-            ))
+            )
           ],
         )));
   }

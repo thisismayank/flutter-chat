@@ -2,6 +2,7 @@ import 'package:casper/data/user_data.dart';
 import 'package:casper/emoticon_face.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import 'chat_page.dart'; // Ensure this imports your ChatPage correctly
 
 // Define the Chat class
@@ -33,9 +34,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<UserProvider>(context).user;
-    print('USERRRR ${user}');
-    print('USERRRR ${user?.name}');
 
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('dd, MMM yyyy').format(now);
     return Scaffold(
         backgroundColor: Colors.blue[800],
         body: SafeArea(
@@ -63,7 +64,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             height: 4,
                           ),
                           Text(
-                            "24 Feb, 2024",
+                            formattedDate,
                             style: TextStyle(color: Colors.blue[200]),
                           )
                         ],

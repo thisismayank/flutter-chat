@@ -11,6 +11,7 @@ import 'dart:io';
 import 'package:uuid/uuid.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
@@ -135,6 +136,8 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<UserProvider>(context).user;
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('dd, MMM yyyy').format(now);
     return Scaffold(
       backgroundColor: Colors.blue[800],
       body: SafeArea(
@@ -159,7 +162,7 @@ class _ChatPageState extends State<ChatPage> {
                         height: 4,
                       ),
                       Text(
-                        "24 Feb, 2024",
+                        formattedDate,
                         style: TextStyle(color: Colors.blue[200]),
                       )
                     ],

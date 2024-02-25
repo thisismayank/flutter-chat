@@ -1,6 +1,7 @@
 import 'package:casper/data/user_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -48,7 +49,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget build(BuildContext context) {
     var user = Provider.of<UserProvider>(context).user;
-
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('dd, MMM yyyy').format(now);
     return Scaffold(
         backgroundColor: Colors.blue[800],
         body: SafeArea(
@@ -72,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       height: 4,
                     ),
                     Text(
-                      "24 Feb, 2024",
+                      formattedDate,
                       style: TextStyle(color: Colors.blue[200]),
                     )
                   ],

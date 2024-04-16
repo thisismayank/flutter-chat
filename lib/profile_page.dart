@@ -82,14 +82,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Expanded(
               child: Container(
                   decoration: BoxDecoration(
                     color: Colors.grey[100],
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(50),
                       topRight: Radius.circular(50),
                     ),
@@ -172,15 +172,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 horizontal: 20, vertical: 10),
                             decoration: BoxDecoration(
                               color: _isEdited
-                                  ? Colors.blue[600]
+                                  ? Colors.blue[800]
                                   : Colors
                                       .grey, // Button color changes based on _isEdited
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
                               "Edit Profile",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 18),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),

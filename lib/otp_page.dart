@@ -30,7 +30,7 @@ class OTPScreen extends StatelessWidget {
       var userDataDecoded = json.decode(response.body);
 
       var userData = userDataDecoded["results"];
-
+      print('userData $userData');
       var user = User(
         userId: userData["_id"],
         name: '${userData["firstName"]} ${userData["lastName"]}',

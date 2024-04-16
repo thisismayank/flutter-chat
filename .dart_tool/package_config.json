@@ -146,6 +146,12 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "flutter_hooks",
+      "rootUri": "file:///Users/mayanka/.pub-cache/hosted/pub.dev/flutter_hooks-0.20.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
       "name": "flutter_link_previewer",
       "rootUri": "file:///Users/mayanka/.pub-cache/hosted/pub.dev/flutter_link_previewer-3.2.2",
       "packageUri": "lib/",
@@ -476,7 +482,7 @@
       "languageVersion": "2.18"
     }
   ],
-  "generated": "2024-02-25T11:22:30.119325Z",
+  "generated": "2024-04-07T07:27:16.526742Z",
   "generator": "pub",
   "generatorVersion": "3.2.6"
 }

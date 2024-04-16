@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'chat_page.dart'; // Ensure this imports your ChatPage correctly
+import 'package:http/http.dart' as http;
+import 'package:flutter_hooks/flutter_hooks.dart';
+
+import 'dart:convert';
 
 // Define the Chat class
 class Chat {
@@ -21,6 +25,89 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  @override
+  String _highlightedTone = '';
+  Future<void> getTone(BuildContext context) async {
+    var user = Provider.of<UserProvider>(context, listen: false).user;
+    if (user == null || user.authToken.isEmpty) {
+      print('User is null or authToken is missing');
+      return;
+    }
+
+    try {
+      final response = await http.get(
+        Uri.parse('http://localhost:8000/v1/users/tone'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ${user.authToken}', // Use the auth token
+        },
+      );
+      if (response.statusCode == 200 && response.body.isNotEmpty) {
+        var responseData = json.decode(response.body);
+        print("TONE $responseData");
+        if (responseData['success'] == true &&
+            responseData['results'] != null) {
+          String tone = responseData['results']['tone'];
+          // Update the state to reflect the fetched tone
+          setState(() {
+            _highlightedTone =
+                tone; // Assume _highlightedTone is a state variable
+          });
+        }
+      } else {
+        print('Failed to fetch tone. Status code: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print('Error fetching tone: $e');
+    }
+  }
+
+  Future<void> _recordTone(BuildContext context, String tone) async {
+    var user = Provider.of<UserProvider>(context, listen: false).user;
+    // Ensure you have a valid user and authToken
+    if (user == null || user.authToken.isEmpty) {
+      print('User is null or authToken is missing');
+      return;
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost:8000/v1/users/tone'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization':
+              'Bearer ${user.authToken}', // Add the auth token here
+        },
+        body: jsonEncode({'tone': tone}),
+      );
+
+      // Check if the response body is not empty and is valid JSON
+      if (response.body.isNotEmpty) {
+        var userDataDecoded = json.decode(response.body);
+
+        if (response.statusCode == 200) {
+          var userData = userDataDecoded["results"];
+          print('userData $userData');
+          // Process your userData as needed
+        } else {
+          // Handle non-200 responses
+          print('Request failed with status: ${response.statusCode}.');
+        }
+      } else {
+        print('Response body is empty.');
+      }
+    } catch (e) {
+      // Handle JSON decode errors or other exceptions
+      print('Error parsing response: $e');
+    }
+  }
+
+  // Provider.of<UserProvider>(context, listen: false).setUser(user);
+
+  // Navigator.of(context).pushAndRemoveUntil(
+  //   MaterialPageRoute(builder: (context) => HomeNavigationScreen()),
+  //   (Route<dynamic> route) => false,
+  // );
   // Example list of chats
   final List<Chat> _chats = [
     Chat(id: '1', name: 'Alice', lastMessage: 'Hey, how are you?'),
@@ -33,6 +120,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    useEffect(() {
+      print("HELLOOOO");
+      getTone(context);
+
+      // side effects code here.
+      //subscription to a stream, opening a WebSocket connection, or performing HTTP requests
+    }, []);
     var user = Provider.of<UserProvider>(context).user;
 
     DateTime now = DateTime.now();
@@ -122,7 +216,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "How do you feel?",
+                        "Mood today?",
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,
@@ -140,12 +234,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       Column(
                         children: [
                           EmoticonFace(
-                            emoticonFace: "😄",
-                            onTap: () {
-                              print('Emoticon Tapped!');
-                            },
-                          ),
-                          SizedBox(
+                              emoticonFace: "😄",
+                              onTap: () => _recordTone(context, "Happy"),
+                              isHighlighted: _highlightedTone == "hero"),
+                          const SizedBox(
                             height: 8,
                           ),
                           Text(
@@ -157,16 +249,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       Column(
                         children: [
                           EmoticonFace(
-                            emoticonFace: "😄",
-                            onTap: () {
-                              print('Emoticon Tapped!');
-                            },
-                          ),
-                          SizedBox(
+                              emoticonFace: "🧐",
+                              onTap: () =>
+                                  _recordTone(context, 'Philosophical'),
+                              isHighlighted:
+                                  _highlightedTone == "Philosophical"),
+                          const SizedBox(
                             height: 8,
                           ),
                           Text(
-                            "Happy",
+                            "Philosophical",
                             style: TextStyle(color: Colors.white),
                           )
                         ],
@@ -174,16 +266,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       Column(
                         children: [
                           EmoticonFace(
-                            emoticonFace: "😄",
-                            onTap: () {
-                              print('Emoticon Tapped!');
-                            },
-                          ),
-                          SizedBox(
+                              emoticonFace: "😉",
+                              onTap: () => _recordTone(context, "Flirty"),
+                              isHighlighted: _highlightedTone == "Flirty"),
+                          const SizedBox(
                             height: 8,
                           ),
                           Text(
-                            "Happy",
+                            "Flirty",
                             style: TextStyle(color: Colors.white),
                           )
                         ],
@@ -191,16 +281,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       Column(
                         children: [
                           EmoticonFace(
-                            emoticonFace: "😄",
-                            onTap: () {
-                              print('Emoticon Tapped!');
-                            },
-                          ),
-                          SizedBox(
+                              emoticonFace: "😏",
+                              onTap: () => _recordTone(context, "Naughty"),
+                              isHighlighted: _highlightedTone == "Naughty"),
+                          const SizedBox(
                             height: 8,
                           ),
                           Text(
-                            "Happy",
+                            "Naghty",
                             style: TextStyle(color: Colors.white),
                           )
                         ],

@@ -130,6 +130,16 @@ class _ChatPageState extends State<ChatPage> {
           .post('http://localhost:8000/v1/chats/image', data: formData);
 
       print('WE ARE HERE!!!!!! $response');
+      _addMessage(message);
+      final _user3 = types.User(id: '1');
+      final textMessage = types.TextMessage(
+        author: _user3,
+        createdAt: 1, // Use the server-provided timestamp
+        id: 1.toString(), // Use the server-generated unique ID
+        text: 'okay you can go barefoot and i’ll wear my combat boots',
+      );
+      print("ADD MESSAGE ${textMessage}");
+      _addMessage(textMessage);
     }
   }
 
